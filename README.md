@@ -79,3 +79,10 @@ innodb_flush_log_at_trx_commit = 1
 
 ## 注意
 * ※/nfs_mountのディレクトリは使用しないでください。ベンチマークが取得できなくなることがあります。
+
+## コンフィグのGithub同期
+
+DBサーバから22ポートで外部に出られなかったため以下方法をとっている
+
+1. DBサーバの/root/repoディレクトリでコミット
+2. 踏み台サーバはcronにより毎分上記からgit pullし、毎分git pushを行うことで毎分githubにsyncしている
