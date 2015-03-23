@@ -86,6 +86,19 @@ fs.aio-max-nr = 1048576
 # sysctl -p
 ```
 
+### /etc/profile
+* 以下追記
+```
+if [ $USER = "mysql" ]; then
+       if [ $SHELL = "/bin/ksh" ]; then
+            ulimit -p 32768
+            ulimit -n 65536
+       else
+            ulimit -u 32768 -n 65536
+       fi
+fi
+```
+
 
 ### mariadb10.0インストール
 
