@@ -108,6 +108,40 @@ if [ $USER = "mysql" ]; then
 fi
 ```
 
+### ディスクマウント
+* もう一つ利用されていないディスクがあったのでマウント
+```
+mkfs.xfs -s size=4096 -b size=4096 /dev/sdb1 -f
+mount -o defaults,noatime,nobarrier -t xfs /dev/sdb1 /var/lib/mysql
+```
+
+## fusion-io設定手順
+* fioフォーマット
+```
+# umount /dev/fioa
+# fio-detach /dev/fct0
+# fio-format --block-size 4096 /dev/fct0
+# fio-attach /dev/fct0
+```
+
+* xfsファイルシステム構築・マウント
+```
+# mkfs.xfs -s size=4096 -b size=4096 /dev/fioa -f
+# mount -o defaults,noatime,nobarrier -t xfs /dev/fioa /fioa
+```
+
+* ext4ファイルシステム構築・マウント
+ * inode領域を広げている
+ * journalを無効化している
+```
+# mkfs.ext4 -b 4096 -f 4096 -I 256 /dev/fioa 
+# tune2fs -o journal_data_writeback /dev/fioa
+# tune2fs -O ^has_journal /dev/fioa
+# e2fsck -f /dev/fioa
+# debugfs -R features /dev/fioa
+# mount -o defaults,noatime,nodiratime,nobarrier,data=writeback -t ext4 /dev/fioa /fioa
+```
+
 ## DBインストール手順
 
 ### mariadb10.0インストール
