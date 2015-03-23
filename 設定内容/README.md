@@ -17,20 +17,20 @@
 
 #### 必要パッケージインストール
 * 以下パッケージをインストール
-** bzr > 2.0
-** gunzip
-** GNU tar
-** gcc 2.95.2 or later
-** gcc-c++
-** GNU make 3.75 or later
-** libtool 1.5.24 or later
-** bison (2.0 for MariaDB 5.5)
-** libncurses
-** zlib-dev
-** GNU automake
-** GNU autoconf
-** cmake
-** jemalloc
+ * bzr > 2.0
+ * gunzip
+ * GNU tar
+ * gcc 2.95.2 or later
+ * gcc-c++
+ * GNU make 3.75 or later
+ * libtool 1.5.24 or later
+ * bison (2.0 for MariaDB 5.5)
+ * libncurses
+ * zlib-dev
+ * GNU automake
+ * GNU autoconf
+ * cmake
+ * jemalloc
 * 確認
 ```
 # rpm -qa | egrep 'bzr|^gcc|gcc-c++|make|libtool|bison|ncurses-devel|zlib-devel|automake|autoconf|cmake|jemalloc'
