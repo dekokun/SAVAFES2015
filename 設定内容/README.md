@@ -36,7 +36,7 @@
 * /nfs_mountに置かれているファイルのパーミッションにあわせ以下手順で作成
 ```
 # groupadd -g 499 mysql
-# useradd -u 498 -g mysql mysql
+# useradd -d /var/lib/mysql -u 498 -g mysql mysql
 ```
 
 ### limits.conf
@@ -356,4 +356,160 @@ esac
 exit 0
 ```
 
+### 最終のmy.cnf
+```
+# For advice on how to change settings please see
+# http://dev.mysql.com/doc/refman/5.6/en/server-configuration-defaults.html
 
+[mysqld]
+
+# ---------------------------------------------------------
+# Base
+# ---------------------------------------------------------
+basedir                                 = /var/lib/mysql
+port                                    = 3306
+autocommit                              = off
+user                                    = mysql
+#foreign_key_checks                      = off
+#unique_checks                           = off
+transaction-isolation                   = READ-UNCOMMITTED
+bind_address                = 0.0.0.0
+
+# ---------------------------------------------------------
+# Binary Log
+# ---------------------------------------------------------
+#binlog_format                           = mixed
+expire_logs_days                        = 7
+#max_binlog_size                         = 512M
+sync_binlog                             = 0
+
+
+# ---------------------------------------------------------
+# Connection Management
+# ---------------------------------------------------------
+max_allowed_packet                      = 4M
+max_connect_errors                      = 4294967295
+max_connections                         = 200
+net_buffer_length                       = 1M
+open_files_limit                        = 65536
+table_open_cache                        = 10000
+#table_open_cache_instances              = 16
+
+
+# ---------------------------------------------------------
+# File Location
+# ---------------------------------------------------------
+datadir                                 = /fioa/mysql
+innodb_log_group_home_dir               = /fioa/mysql
+#innodb_log_group_home_dir               = /var/lib/mysql/data
+innodb_data_home_dir                    = /fioa/mysql
+#log_bin                                 = /var/lib/mysql/binlog/mysql-bin
+log_error                               = /var/lib/mysql/log/mysql_error.log
+relay_log_recovery                      = on
+#slow_query_log_file                     = /var/lib/mysql/log/mysql-slowqueries.log
+tmpdir                                  = /fioa/tmp
+#tmpdir                 = /var/lib/mysql/tmp
+
+# ---------------------------------------------------------
+# Innodb
+# ---------------------------------------------------------
+innodb_additional_mem_pool_size         = 8M
+innodb_adaptive_flushing                = on
+innodb_buffer_pool_size                 = 27G
+innodb_buffer_pool_dump_at_shutdown     = on
+innodb_buffer_pool_load_at_startup      = on
+innodb_buffer_pool_instances            = 8
+innodb_change_buffer_max_size           = 50
+innodb_change_buffering                 = changes
+innodb_data_file_path                   = ibdata1:76M:autoextend
+innodb_file_per_table                   = on
+innodb_flush_method                     = O_DIRECT
+innodb_flush_neighbors                  = 0
+innodb_io_capacity                      = 100000
+innodb_io_capacity_max                  = 250000
+innodb_log_buffer_size                  = 32M
+innodb_log_block_size                   = 4k
+innodb_log_file_size                    = 4G
+innodb_log_files_in_group       = 1
+innodb_open_files                       = 15000
+#innodb_page_size                        = 4k
+innodb_print_all_deadlocks              = off
+innodb_read_ahead_threshold             = 0
+innodb_read_io_threads                  = 12
+innodb_sort_buffer_size                 = 16M
+innodb_thread_concurrency               = 0
+innodb_write_io_threads                 = 24
+
+innodb_sync_array_size          = 62
+innodb_support_xa           = off
+innodb_rollback_segments        = 32
+
+# ---------------------------------------------------------
+# Myisam
+# ---------------------------------------------------------
+key_buffer_size                         = 64M
+
+
+# ---------------------------------------------------------
+# Memory
+# ---------------------------------------------------------
+binlog_stmt_cache_size                  = 65536
+max_allowed_packet                      = 4M
+max_heap_table_size                     = 512M
+tmp_table_size                          = 512M
+query_cache_size                        = 0
+query_cache_type                        = 0
+thread_cache_size                       = 64
+
+
+# ---------------------------------------------------------
+# Memory Allocation per Connection
+# ---------------------------------------------------------
+binlog_cache_size                       = 65536
+join_buffer_size                        = 2M
+read_buffer_size                        = 2M
+read_rnd_buffer_size                    = 8M
+sort_buffer_size                        = 8M
+
+
+# ---------------------------------------------------------
+# Replecation
+# 1.read_only: (master=off, slave=on)
+# 2.server_id: (master1=1, slave1=2, slave2=3)
+# 3.apply the slave db only
+# 4.apply the slave db only
+# ---------------------------------------------------------
+read_only                               = off
+server_id                               = 1
+#relay-log                              = mysql-relay-bin
+#relay-log-index                        = mysql-relay-bin
+
+# ---------------------------------------------------------
+# Slow Query Log
+# ---------------------------------------------------------
+#long_query_time                         = 0.5
+slow_query_log                          = off
+
+
+# ---------------------------------------------------------
+# Thread Pool
+# ---------------------------------------------------------
+thread_handling                         = pool-of-threads
+thread_pool_size                        = 32
+thread_pool_oversubscribe               = 32
+
+
+# ---------------------------------------------------------
+# SQL Behavior
+# ---------------------------------------------------------
+character_set_server                    = utf8
+explicit_defaults_for_timestamp         = on
+max_error_count                         = 10000
+performance_schema                      = off
+skip-name-resolve
+
+innodb_doublewrite
+innodb_flush_log_at_trx_commit = 1
+innodb_fast_shutdown = 0
+
+```
