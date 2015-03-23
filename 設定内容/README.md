@@ -79,8 +79,13 @@ net.ipv6.conf.default.disable_ipv6 = 1
 
 # 非同期I/Oリクエスト数上限設定(デフォルト:65536)
 fs.aio-max-nr = 1048576
-
 ```
+
+* 反映
+```
+# sysctl -p
+```
+
 
 ### mariadb10.0インストール
 
