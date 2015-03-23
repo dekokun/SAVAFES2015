@@ -146,6 +146,55 @@ mount -o defaults,noatime,nobarrier -t xfs /dev/sdb1 /var/lib/mysql
 
 ### mariadb10.0インストール
 
+#### 必要パッケージインストール
+* 以下パッケージをインストール
+ * bzr > 2.0
+ * gunzip
+ * GNU tar
+ * gcc 2.95.2 or later
+ * gcc-c++
+ * GNU make 3.75 or later
+ * libtool 1.5.24 or later
+ * bison (2.0 for MariaDB 5.5)
+ * libncurses
+ * zlib-dev
+ * GNU automake
+ * GNU autoconf
+ * cmake
+ * jemalloc
+* 確認
+```
+# rpm -qa | egrep 'bzr|^gcc|gcc-c++|make|libtool|bison|ncurses-devel|zlib-devel|automake|autoconf|cmake|jemalloc'
+# yum install .....
+# rpm -ivh jemalloc-3.6.0-1.el6.x86_64.rpm
+# rpm -qa | egrep 'bzr|^gcc|gcc-c++|make|libtool|bison|ncurses-devel|zlib-devel|automake|autoconf|cmake|jemalloc'
+# yum install libaio-devel
+```
+
+#### インストールから初回起動
+* /usr/local/srcにDLしたmariadb-10.0.17.tar.gzを配置
+```
+# cd /usr/local/src
+# tar xzf mariadb-10.0.17.tar.gz
+# chown -R mysql:mysql mariadb-10.0.17
+# su - mysql
+$ cd /usr/local/src/mariadb-10.0.17
+$ cmake . -DCMAKE_INSTALL_PREFIX:PATH=/var/lib/mysql -DMYSQL_DATADIR:PATH=/fioa/mysql
+$ make
+$ make test
+$ make install
+$ cd /var/lib/mysql
+$ mkdir conf binlog log tmp data/iblog
+$ cd
+$ vi .bash_profile
+$ source .bash_profile
+$ cd /var/lib/mysql/conf
+$ vi my.cnf
+$ cd ~/scripts
+$ ./mysql_install_db --defaults-file=/var/lib/mysql/conf/my.cnf --basedir=/var/lib/mysql --user=maria --datadir=/fioa/mysql
+$ mysqld_safe --defaults-file=/var/lib/mysql/conf/my.cnf --user=maria10 --socket=/tmp/mysql.sock &
+```
+
 ### percona56インストール
 #### ソースダウンロード
 ```
