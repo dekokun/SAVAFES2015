@@ -5,6 +5,14 @@
 * * *
 
 ## 環境準備
+* 履歴を残すために以下の様な構成でGitを利用し設定を保存できるようにした(延長戦では設定せず)
+* DBサーバが外部へssh通信/https通信ができなかったので以下のような設定にしていた
+ # 踏み台サーバにGitHubリポジトリからclone
+ # DBサーバの/root以下にGitリポジトリを作る
+ # Gitリポジトリ内に各設定ファイル(my.cnfやlimits.confなど)を置きそこにシンボリックリンクを貼る
+ # 各ファイル設定を変更したらコミット
+ # 踏み台サーバはclonで1分に一回DBサーバリポジトリからpull
+ # 踏み台サーバはclonで1分に一回GitHubリポジトリへpush
 
 * * *
 
@@ -148,7 +156,7 @@ mount -o defaults,noatime,nobarrier -t xfs /dev/sdb1 /var/lib/mysql
 
 * * *
 
-## DBインストール手順
+## DB設定
 
 ### mariadb10.0インストール
 
@@ -260,3 +268,78 @@ $ cd ~/scripts
 $ ./mysql_install_db --defaults-file=/var/lib/mysql/conf/my.cnf.02 --basedir=/var/lib/mysql --user=mysql --datadir=/fioa/mysql
 $ mysqld_safe --defaults-file=/var/lib/mysql/conf/my.cnf.02 --user=mysql --socket=/tmp/mysql.sock &
 ```
+
+### initファイル設置
+* 自作のinitファイル
+```
+#!/bin/sh
+
+# chkconfig: 2345 64 00
+# description: mysql script.
+
+basedir=/var/lib/mysql
+datadir=/fioa/mysql
+mysql_owner=mysql
+
+start_mysql() {
+    sleep 5
+    if [ -e /fioa/mysql/ib_logfile0 ];
+    then
+        rm -rf /fioa/mysql/ib_logfile0
+    fi
+    if [ -e /fioa/mysql/ib_logfile1 ];
+    then
+        rm -rf /fioa/mysql/ib_logfile1
+    fi
+    if [ -e /var/lib/mysql/data/ib_logfile0 ];
+    then
+        rm -rf /var/lib/mysql/data/ib_logfile0
+    fi
+    if [ -e /var/lib/mysql/data/ib_logfile1 ];
+    then
+        rm -rf /var/lib/mysql/data/ib_logfile1
+    fi
+
+    su - $mysql_owner -c "$basedir/bin/mysqld_safe --defaults-file=/var/lib/mysql/conf/my.cnf.02 --user=mysql --socket=/tmp/mysql.sock --numa-interleave=1 >/dev/null 2>&1 &"
+    sleep 60
+}
+
+stop_mysql() {
+    sleep 15
+    su - $mysql_owner -c "$basedir/bin/mysqladmin shutdown -uroot"
+    sleep 15
+}
+
+case "$1" in
+        start)
+                # Start the Mysql databases:
+                start_mysql
+
+                touch /var/lock/subsys/mysql
+                ;;
+
+        stop)
+                stop_mysql
+
+                rm -f /var/lock/subsys/mysql
+                ;;
+        restart)
+                $0 stop
+                $0 start
+                ;;
+        status)
+                if [ -f /var/lock/subsys/mysql ]; then
+                echo $0 started.
+                else
+                echo $0 stopped.
+                fi
+                ;;
+        *)
+                echo "usage: mysql {start|stop|restart|status}"
+                exit 1
+esac
+
+exit 0
+```
+
+
