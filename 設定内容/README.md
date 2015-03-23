@@ -2,7 +2,11 @@
 
 ## 戦いの履歴
 
+* * *
+
 ## 環境準備
+
+* * *
 
 ## OS設定
 
@@ -141,6 +145,8 @@ mount -o defaults,noatime,nobarrier -t xfs /dev/sdb1 /var/lib/mysql
 # debugfs -R features /dev/fioa
 # mount -o defaults,noatime,nodiratime,nobarrier,data=writeback -t ext4 /dev/fioa /fioa
 ```
+
+* * *
 
 ## DBインストール手順
 
