@@ -18,6 +18,20 @@
 
 ## OS設定
 
+### 不要デーモンを止める
+* 以下デーモンをstopし,chkconfigをoffにした
+ * iptables
+ * ip6tables
+ * postfix
+ * acpid
+ * auditd
+ * cpuspeed
+ * haldaemon
+ * kdump
+ * messagebus
+ * quota_nld
+ * rdisc
+
 ### mysqlユーザ作成
 * /nfs_mountに置かれているファイルのパーミッションにあわせ以下手順で作成
 ```
