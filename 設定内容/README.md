@@ -4,6 +4,8 @@
 
 ## 環境準備
 
+## OS設定
+
 ### limits.conf
 * 以下を追記
 ```
@@ -99,6 +101,7 @@ if [ $USER = "mysql" ]; then
 fi
 ```
 
+## DBインストール手順
 
 ### mariadb10.0インストール
 
