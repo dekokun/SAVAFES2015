@@ -4,7 +4,83 @@
 
 ## 環境準備
 
-### 
+### limits.conf
+* 以下を追記
+```
+mysql soft nproc 32768
+mysql hard nproc 32768
+mysql soft nofile 65536
+mysql hard nofile 65536
+```
+
+### sysctl.conf
+* 以下の状態
+```
+# Kernel sysctl configuration file for Red Hat Linux
+#
+# For binary values, 0 is disabled, 1 is enabled.  See sysctl(8) and
+# sysctl.conf(5) for more details.
+
+# Controls IP packet forwarding
+net.ipv4.ip_forward = 0
+
+# Controls source route verification
+net.ipv4.conf.default.rp_filter = 1
+
+# Do not accept source routing
+net.ipv4.conf.default.accept_source_route = 0
+
+# Controls the System Request debugging functionality of the kernel
+kernel.sysrq = 0
+
+# Controls whether core dumps will append the PID to the core filename.
+# Useful for debugging multi-threaded applications.
+kernel.core_uses_pid = 1
+
+# Controls the use of TCP syncookies
+net.ipv4.tcp_syncookies = 1
+
+# Disable netfilter on bridges.
+net.bridge.bridge-nf-call-ip6tables = 0
+net.bridge.bridge-nf-call-iptables = 0
+net.bridge.bridge-nf-call-arptables = 0
+
+# Controls the default maxmimum size of a mesage queue
+kernel.msgmnb = 65536
+
+# Controls the maximum size of a message, in bytes
+kernel.msgmax = 65536
+
+# Controls the maximum shared segment size, in bytes
+kernel.shmmax = 68719476736
+
+# Controls the maximum number of shared memory segments, in pages
+kernel.shmall = 4294967296
+
+# MySQL parameter
+kernel.sem = 250 32000 100 500
+vm.overcommit_memory=1
+vm.overcommit_ratio=99
+vm.swappiness=0
+kernel.msgmni=1024
+
+# Network
+net.core.somaxconn = 1024
+net.core.rmem_max = 8388608
+net.core.wmem_max = 6553600
+net.ipv4.tcp_rmem = 4096 87380 8388608
+net.ipv4.tcp_wmem = 4096 65536 6553600
+net.ipv4.tcp_fin_timeout = 5
+net.ipv4.ip_local_port_range = 1024 65535
+
+# ipv6 disable
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+
+# 非同期I/Oリクエスト数上限設定(デフォルト:65536)
+fs.aio-max-nr = 1048576
+
+```
 
 ### mariadb10.0インストール
 
