@@ -6,6 +6,13 @@
 
 ## OS設定
 
+### mysqlユーザ作成
+* /nfs_mountに置かれているるファイルのパーミッションにあわせ以下手順で作成
+```
+# groupadd -g 499 mysql
+# useradd -u 498 -g mysql mysql
+```
+
 ### limits.conf
 * 以下を追記
 ```
